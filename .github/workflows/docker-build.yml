@@ -43,7 +43,7 @@ jobs:
       - name: Test Run the Docker Image
         if: ${{ success() }}
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 12
         run: |
           docker run \
           --rm \
@@ -108,7 +108,6 @@ jobs:
 
       - name: Test - Server Started
         run: |
-          grep -q -iE "INF \[Steamworks.NET\] GameServer.LogOn successful" "./docker-log.log"
           grep -q -iE "INF \[Steamworks.NET\] GameServer.LogOn successful" "./7DTDConfig/logs/output_log-*.log"
 
       - name: Test - Sed Command Completed
