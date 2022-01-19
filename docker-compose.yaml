@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  dedicated_server:
+    build:
+      context: .
+      dockerfile: docker/7_days_to_die-dedicated-server.Dockerfile
+      args:
+        USER_ID: 1000
+        GROUP_ID: 1000
+    restart: unless-stopped
+    user: "1000:1000"
+    environment:
+      - "BIND_IP=0.0.0.0"
+      - "GAME_VERSION=public"
+      - "PUBLIC_SERVER=2"
+      - "QUERY_PORT=16261"
+      - "GAME_PORT=8766"
+      - "SERVER_NAME=7DaysToDieServer"
+      - "SERVER_PASSWORD=changeme"
+      - "SERVER_LOG_FILE="
+      - "MAX_PLAYERS=8"
+      - "MAX_RAM=4096m"
+    ports:
+      - target: 26900
+        published: 26900
+        protocol: tcp
+      - target: 26900
+        published: 26900
+        protocol: udp
+      - target: 26901
+        published: 26901
+        protocol: udp
+      - target: 26902
+        published: 26902
+        protocol: udp
+    volumes:
+      - ./7DTDConfig:/home/steam/7DTDConfig
+      - ./7DTDSaves:/home/steam/.local/share/7DaysToDie/Saves
+      - ./7DTDServer:/home/steam/7DTDServer
+    cap_drop:
+      - ALL

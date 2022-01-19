@@ -1,0 +1,19 @@
+///////////////////////////////////////////////////////////////////////
+// SteamCMD installation script for 7 Days to Die Dedicated Server
+///////////////////////////////////////////////////////////////////////
+
+// Do not shutdown on a failed command
+@ShutdownOnFailedCommand 0
+
+//No password as this is unattended
+@NoPromptForPassword 1
+
+// Set the game installation directory
+force_install_dir /home/steam/7DTDServer
+
+login anonymous
+
+// Install/Update the 7 Days to Die Dedicated Server
+app_update 294420 -beta GAME_VERSION validate
+
+quit
