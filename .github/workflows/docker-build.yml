@@ -108,7 +108,7 @@ jobs:
 
       - name: Test - Server Started
         run: |
-          grep -q -iE "INF \[Steamworks.NET\] GameServer.LogOn successful" "./7DTDConfig/logs/output_log-*.log"
+          find ./7DTDConfig/logs -iname "*.log" -exec grep -qiE "INF \[Steamworks.NET\] GameServer.LogOn successful" {} \+
 
       - name: Test - Sed Command Completed
         run: |
