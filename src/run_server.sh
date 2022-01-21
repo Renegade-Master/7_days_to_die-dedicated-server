@@ -91,6 +91,7 @@ update_folder_permissions() {
 
     chown -R "$(id -u):$(id -g)" "$BASE_GAME_DIR"
     chown -R "$(id -u):$(id -g)" "$CONFIG_DIR"
+    mkdir -p "$SAVES_DIR"
 
     printf "\n### Folder Permissions updated.\n"
 }
