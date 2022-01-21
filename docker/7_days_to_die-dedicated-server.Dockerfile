@@ -23,7 +23,10 @@ COPY src /home/steam/
 
 # Temporarily login as root to modify ownership
 USER 0:0
-RUN chown -R ${USER_ID}:${GROUP_ID} "/home/steam"
+RUN chown -R ${USER_ID}:${GROUP_ID} "/home/steam" \
+    # Workaround for instances when the folder is linked to the root
+    && ln -s /home/steam/.local/ /.local \
+    && ln -s /home/steam/.config/ /.config
 
 # Switch to the Steam User
 USER ${USER_ID}:${GROUP_ID}
