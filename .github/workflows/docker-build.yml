@@ -1,0 +1,140 @@
+name: Build and Test Server Image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  build-and-run:
+    name: Build and Run Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Variables
+        id: variables
+        run: |
+          echo "::set-output name=datetime::$(date +%Y%m%dT%H%M%SZ)"
+          echo "::set-output name=userid::$(id -u)"
+          echo "::set-output name=groupid::$(id -g)"
+
+      - name: Set Permissions on Executable Scripts
+        run: |
+          chmod +x src/install_server.scmd
+          chmod +x src/run_server.sh
+
+      - name: Make Directories
+        run: mkdir 7DTDConfig 7DTDSaves 7DTDServer
+
+      - name: Build the Docker Image
+        if: ${{ success() }}
+        run: |
+          docker build \
+          --file docker/7_days_to_die-dedicated-server.Dockerfile \
+          --tag renegademaster/7_days_to_die-dedicated-server:${{ steps.variables.outputs.datetime }} \
+          --build-arg USER_ID=${{ steps.variables.outputs.userid }} \
+          --build-arg GROUP_ID=${{ steps.variables.outputs.groupid }} \
+          .
+
+      - name: Test Run the Docker Image
+        if: ${{ success() }}
+        continue-on-error: true
+        timeout-minutes: 13
+        run: |
+          docker run \
+          --rm \
+          --name 7_days_to_die-dedicated-server \
+          --user ${{ steps.variables.outputs.userid }}:${{ steps.variables.outputs.groupid }} \
+          --mount type=bind,source="$(pwd)/7DTDConfig",target=/home/steam/7DTDConfig \
+          --mount type=bind,source="$(pwd)/7DTDSaves",target=/home/steam/.local/share/7DaysToDie/Saves \
+          --mount type=bind,source="$(pwd)/7DTDServer",target=/home/steam/7DTDServer \
+          renegademaster/7_days_to_die-dedicated-server:${{ steps.variables.outputs.datetime }} \
+          2>&1 | tee ./docker-log.log
+
+      - name: Investigate File Structure on Failure
+        if: ${{ failure() }}
+        run: |
+          pwd
+          echo ''
+          ls -lAuhFn ./7DTDConfig/
+          echo ''
+          ls -lAuhFn ./7DTDSaves/
+          echo ''
+          ls -lAuhFn ./7DTDServer/
+          echo ''
+          tree -aL 4 ./7DTDConfig/
+          echo ''
+          tree -aL 4 ./7DTDSaves/
+          echo ''
+          tree -aL 4 ./7DTDServer/
+
+      - name: Upload Docker Logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-logs
+          path: |
+            docker-log.log
+            7DTDConfig/logs/output_log-*.log
+
+      - name: Upload Server Configuration
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: server-configs
+          path: |
+            7DTDConfig/serverconfig.xml
+            7DTDSaves/serveradmin.xml
+
+  test:
+    name: Test Server
+    runs-on: ubuntu-latest
+    needs:
+      - build-and-run
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Download Docker Logs
+        uses: actions/download-artifact@v2
+        with:
+          name: docker-logs
+
+      - name: Download Server Configs
+        uses: actions/download-artifact@v2
+        with:
+          name: server-configs
+
+      - name: Test - Sed Command Completed
+        run: |
+          ! grep -q -iE "sed: can't read" "./docker-log.log"
+
+      - name: Test - Server Started
+        run: |
+          find ./7DTDConfig/logs -iname "*.log" -exec grep -qiE "INF \[Steamworks.NET\] GameServer.LogOn successful" {} \+
+
+      - name: Test - Server Setting Changes Applied Correctly
+        run: |
+          [[ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]]
+          [[ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days to Die Dedicated Server" ]]
+
+      - name: Investigate File Structure on Failure
+        if: ${{ failure() }}
+        run: |
+          pwd
+          echo ''
+          ls -lAuhFn ./7DTDConfig/
+          echo ''
+          ls -lAuhFn ./7DTDSaves/
+          echo ''
+          tree -aL 4 ./7DTDConfig/
+          echo ''
+          tree -aL 4 ./7DTDSaves/
