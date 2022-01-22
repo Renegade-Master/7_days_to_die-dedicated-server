@@ -15,7 +15,7 @@ services:
       - "PUBLIC_SERVER=2"
       - "QUERY_PORT=26900"
       - "SERVER_NAME=7 Days To Die Dedicated Server"
-      - "SERVER_DESC=Welcome to a 7 Days To Die Server"
+      - "SERVER_DESC=Welcome to a 7 Days to Die Dedicated Server"
       - "SERVER_PASSWORD="
       - "SERVER_LOG_FILE="
       - "MAX_PLAYERS=8"
