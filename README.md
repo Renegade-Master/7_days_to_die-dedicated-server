@@ -30,7 +30,7 @@ Source:
 Resource links:
 
 - [Valve Dedicated Server Wiki](https://developer.valvesoftware.com/wiki/7_Days_to_Die_Dedicated_Server)
-- [Dedicated Server Configuration](https://7daystodie.fandom.com/wiki/Server#Managing_a_server)
+- [Dedicated Server Configuration](https://7daystodie.fandom.com/wiki/Server#How_to_host_a_server)
 - [Steam DB Page](https://steamdb.info/app/294420/)
 
 ## Instructions
@@ -42,16 +42,14 @@ recommended.
 
 | Argument            | Description                                                            | Values        | Default          |
 |---------------------|------------------------------------------------------------------------|---------------|------------------|
-| `BIND_IP`           | IP to bind the server to                                               | 0.0.0.0       | 0.0.0.0          |
 | `GAME_VERSION`      | Game version to serve                                                  | [a-zA-Z0-9_]+ | `public`         |
-| `PUBLIC_SERVER`     | Is the server displayed Publicly                                       | (true\|false) | true             |
-| `QUERY_PORT`        | Port for other players to connect to                                   | 1000 - 65535  | 16261            |
-| `GAME_PORT`         | Port for sending game data to clients                                  | 1000 - 65535  | 8766             |
+| `PUBLIC_SERVER`     | Is the server displayed Publicly                                       | [0-3]         | 2                |
+| `QUERY_PORT`        | Port for other players to connect to                                   | 1000 - 65535  | 26900            |
 | `SERVER_NAME`       | Publicly visible Server Name                                           | [a-zA-Z0-9]+  | 7DaysToDieServer |
-| `SERVER_PASSWORD`   | Server password                                                        | [a-zA-Z0-9]+  | changeme         |
+| `SERVER_DESC`       | Publicly visible Server Description                                    | [a-zA-Z0-9]+  | 7DaysToDieServer |
+| `SERVER_PASSWORD`   | Server password                                                        | [a-zA-Z0-9]+  |                  |
 | `SERVER_LOG_FILE`   | Path to store log file                                                 | [a-zA-Z0-9]+  |                  |
 | `MAX_PLAYERS`       | Maximum amount of player to be permitted into the game                 | [0-9]+        | 8                |
-| `MAX_RAM`           | Maximum amount of RAM that the process can use                         | ([0-9]+)m     | 4096m            |
 
 ### Docker
 
@@ -86,18 +84,15 @@ The following are instructions for running the server using the Docker image.
        --publish 26900:26900/tcp --publish 26900:26900/udp --publish 26901:26901/udp --publish 26902:26902/udp \
        --name 7dtd-dedicated_server \
        --user=$(id -u):$(id -g) \
-       [--env=BIND_IP=<value>] \
        [--env=GAME_VERSION=<value>] \
        [--env=QUERY_PORT=<value>] \
-       [--env=GAME_PORT=<value>] \
        [--env=SERVER_NAME=<value>] \
        [--env=SERVER_PASSWORD=<value>] \
-       [--env=SERVER_LOG_FILE	=<value>] \
+       [--env=SERVER_LOG_FILE=<value>] \
        [--env=MAX_PLAYERS=<value>] \
-       [--env=MAX_RAM=<value>] \
        renegademaster/7_days_to_die-dedicated-server[:<tagname>]
    ```
-
+ 
 4. Once you see `INF [Steamworks.NET] GameServer.LogOn successful` in the console, people can start to join the server.
 
 ### Docker-Compose
@@ -116,8 +111,8 @@ The following are instructions for running the server using Docker-Compose.
 
    ***Note**: If the default ports are to be overridden, then the `published` ports must also be changed*
 
-3. In the `docker-compose.yaml` file, you must change the `service.dedicated_server.user` values to match your local user.
-   To find your local user and group ids, run the following command:
+3. In the `docker-compose.yaml` file, you must change the `service.dedicated_server.user` values to match your local
+   user. To find your local user and group ids, run the following command:
 
    ```shell
    printf "UID: %s\nGID: %s\n" $(id -u) $(id -g)

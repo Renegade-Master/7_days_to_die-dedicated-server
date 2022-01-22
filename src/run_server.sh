@@ -25,27 +25,23 @@ start_server() {
 apply_postinstall_config() {
     printf "\n### Applying Post Install Configuration...\n"
 
-
-    # Set the Server Publicity status
-#    sed -i "s/Open=.*/Open=$PUBLIC_SERVER/g" "$SERVER_CONFIG"
-
-    # Set the Server query Port
-#    sed -i "s/DefaultPort=.*/DefaultPort=$QUERY_PORT/g" "$SERVER_CONFIG"
-
-    # Set the Server game Port
-#    sed -i "s/SteamPort1=.*/SteamPort1=$GAME_PORT/g" "$SERVER_CONFIG"
-
     # Set the Server Name
-#    sed -i "s/PublicName=.*/PublicName=$SERVER_NAME/g" "$SERVER_CONFIG"
+    ./edit_server_config.py "$SERVER_CONFIG" "ServerName" "$SERVER_NAME"
+
+    # Set the Server Description
+    ./edit_server_config.py "$SERVER_CONFIG" "ServerDescription" "$SERVER_DESC"
 
     # Set the Server Password
-#    sed -i "s/Password=.*/Password=$SERVER_PASSWORD/g" "$SERVER_CONFIG"
+    ./edit_server_config.py "$SERVER_CONFIG" "ServerPassword" "$SERVER_PASSWORD"
+
+    # Set the Server query Port
+    ./edit_server_config.py "$SERVER_CONFIG" "ServerPort" "$QUERY_PORT"
+
+    # Set the Server publicity status
+    ./edit_server_config.py "$SERVER_CONFIG" "ServerVisibility" "$PUBLIC_SERVER"
 
     # Set the Max Players
-#    sed -i "s/MaxPlayers=.*/MaxPlayers=$MAX_PLAYERS/g" "$SERVER_CONFIG"
-
-    # Set the maximum amount of RAM for the JVM
-#    sed -i "s/-Xmx.*/-Xmx$MAX_RAM\",/g" "$SERVER_VM_CONFIG"
+    ./edit_server_config.py "$SERVER_CONFIG" "ServerMaxPlayerCount" "$MAX_PLAYERS"
 
     printf "\n### Post Install Configuration applied.\n"
 }
@@ -106,26 +102,26 @@ set_variables() {
     SAVES_DIR="/home/steam/.local/share/7DaysToDie"
     LOG_FILE=${LOG_FILE:-"$CONFIG_DIR/logs/output_log-$(date +%Y-%m-%d__%H-%M-%S).log"}
 
-    # Set the IP address variable
-    BIND_IP=${BIND_IP:-"0.0.0.0"}
-
     # Set the game version variable
     GAME_VERSION=${GAME_VERSION:-"public"}
 
     # Set the Server Publicity variable
-    PUBLIC_SERVER=${PUBLIC_SERVER:-"true"}
+    PUBLIC_SERVER=${PUBLIC_SERVER:-"2"}
 
     # Set the IP Query Port variable
-    QUERY_PORT=${QUERY_PORT:-"16261"}
-
-    # Set the IP Game Port variable
-    GAME_PORT=${GAME_PORT:-"8766"}
+    QUERY_PORT=${QUERY_PORT:-"26900"}
 
     # Set the Server name variable
-    SERVER_NAME=${SERVER_NAME:-"7DaysToDieServer"}
+    SERVER_NAME=${SERVER_NAME:-"7 Days To Die Dedicated Server"}
+
+    # Set the Server description variable
+    SERVER_DESC=${SERVER_DESC:-"Welcome to a 7 Days to Die Dedicated Server"}
 
     # Set the Server Password variable
     SERVER_PASSWORD=${SERVER_PASSWORD:-""}
+
+    # Maximum number of players
+    MAX_PLAYERS=${MAX_PLAYERS:-"8"}
 
     SERVER_START="$BASE_GAME_DIR/7DaysToDieServer.x86_64"
     SERVER_CONFIG="$CONFIG_DIR/serverconfig.xml"

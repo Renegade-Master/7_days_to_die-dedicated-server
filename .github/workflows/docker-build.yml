@@ -106,10 +106,15 @@ jobs:
         with:
           name: server-configs
 
+      - name: Test - Sed Command Completed
+        run: |
+          ! grep -q -iE "sed: can't read" "./docker-log.log"
+
       - name: Test - Server Started
         run: |
           find ./7DTDConfig/logs -iname "*.log" -exec grep -qiE "INF \[Steamworks.NET\] GameServer.LogOn successful" {} \+
 
-      - name: Test - Sed Command Completed
+      - name: Test - Server Setting Changes Applied Correctly
         run: |
-          ! grep -q -iE "sed: can't read" "./docker-log.log"
+          [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]]
+          [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days To Die Server" ]]

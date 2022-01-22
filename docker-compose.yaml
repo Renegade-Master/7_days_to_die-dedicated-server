@@ -11,16 +11,14 @@ services:
     restart: unless-stopped
     user: "1000:1000"
     environment:
-      - "BIND_IP=0.0.0.0"
       - "GAME_VERSION=public"
       - "PUBLIC_SERVER=2"
-      - "QUERY_PORT=16261"
-      - "GAME_PORT=8766"
-      - "SERVER_NAME=7DaysToDieServer"
-      - "SERVER_PASSWORD=changeme"
+      - "QUERY_PORT=26900"
+      - "SERVER_NAME=7 Days To Die Dedicated Server"
+      - "SERVER_DESC=Welcome to a 7 Days To Die Server"
+      - "SERVER_PASSWORD="
       - "SERVER_LOG_FILE="
       - "MAX_PLAYERS=8"
-      - "MAX_RAM=4096m"
     ports:
       - target: 26900
         published: 26900

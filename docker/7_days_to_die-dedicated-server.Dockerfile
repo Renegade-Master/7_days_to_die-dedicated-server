@@ -28,6 +28,12 @@ RUN chown -R ${USER_ID}:${GROUP_ID} "/home/steam" \
     && ln -s /home/steam/.local/ /.local \
     && ln -s /home/steam/.config/ /.config
 
+# Install runtime dependencies
+RUN apt-get update && apt-get autoremove -y \
+    && apt-get install -y --no-install-recommends \
+        python3-minimal \
+    && rm -rf /var/lib/apt/lists/*
+
 # Switch to the Steam User
 USER ${USER_ID}:${GROUP_ID}
 
