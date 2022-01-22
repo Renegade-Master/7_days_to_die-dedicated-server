@@ -66,7 +66,7 @@ def check_server_config_file(config_file: str) -> bool:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or len(sys.argv) > 4 :
+    if len(sys.argv) < 3 or len(sys.argv) > 4:
         print("Usage: edit_server_config.py <config_file> <key> [<value>]")
         sys.exit(1)
 
