@@ -88,7 +88,7 @@ jobs:
           name: server-configs
           path: |
             7DTDConfig/serverconfig.xml
-            7DTDSaves/serveradmin.xml            
+            7DTDSaves/serveradmin.xml
 
   test:
     name: Test Server
@@ -120,4 +120,4 @@ jobs:
       - name: Test - Server Setting Changes Applied Correctly
         run: |
           [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]]
-          [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days To Die Server" ]]
+          [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days To Die Dedicated Server" ]]
