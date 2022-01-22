@@ -92,7 +92,7 @@ The following are instructions for running the server using the Docker image.
        [--env=MAX_PLAYERS=<value>] \
        renegademaster/7_days_to_die-dedicated-server[:<tagname>]
    ```
- 
+
 4. Once you see `INF [Steamworks.NET] GameServer.LogOn successful` in the console, people can start to join the server.
 
 ### Docker-Compose

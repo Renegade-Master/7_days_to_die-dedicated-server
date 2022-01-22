@@ -123,7 +123,6 @@ jobs:
 
       - name: Test - Server Setting Changes Applied Correctly
         run: |
-          set -x
           [[ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]]
           [[ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days to Die Dedicated Server" ]]
 
