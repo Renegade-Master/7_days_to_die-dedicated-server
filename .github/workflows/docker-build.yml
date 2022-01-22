@@ -119,8 +119,8 @@ jobs:
 
       - name: Test - Server Setting Changes Applied Correctly
         run: |
-          [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]]
-          [[ "$("./src/edit_server_config.py" "./7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days To Die Dedicated Server" ]]
+          [[ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]]
+          [[ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days To Die Dedicated Server" ]]
 
       - name: Investigate File Structure on Failure
         if: ${{ failure() }}
@@ -131,10 +131,6 @@ jobs:
           echo ''
           ls -lAuhFn ./7DTDSaves/
           echo ''
-          ls -lAuhFn ./7DTDServer/
-          echo ''
           tree -aL 4 ./7DTDConfig/
           echo ''
           tree -aL 4 ./7DTDSaves/
-          echo ''
-          tree -aL 4 ./7DTDServer/
