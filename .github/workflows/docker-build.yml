@@ -125,7 +125,7 @@ jobs:
         run: |
           set -x
           [ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerPort")" == "26900" ]
-          [ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days To Die Dedicated Server" ]
+          [ "$("$(pwd)/src/edit_server_config.py" "$(pwd)/7DTDConfig/serverconfig.xml" "ServerDescription")" == "Welcome to a 7 Days to Die Dedicated Server" ]
 
       - name: Investigate File Structure on Failure
         if: ${{ failure() }}
